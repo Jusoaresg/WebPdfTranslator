@@ -16,8 +16,7 @@ class Colors:
 threadsToUse = 1
 checkForErrors = ""
 
-pdfFile = "./files/sample.pdf"
-
+#pdfFile = "./files/sample.pdf"
 
 errors = []
 
@@ -51,7 +50,7 @@ def checkErrors(start, end):
     finally:
         cv.close()
 
-async def init():
+async def init(pdfFile):
     if(checkForErrors == ""):
 
         threads = []
