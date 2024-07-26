@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Response, UploadFile
 from starlette.responses import FileResponse
 import aiofiles
-from converterDocxPdf import converter
+from pdf_to_docx import converter
 import uuid
 import os
 import shutil

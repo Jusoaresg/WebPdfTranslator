@@ -1,28 +1,11 @@
-from deep_translator import GoogleTranslator
 import subprocess
 import threading
 import docx
-from tqdm import tqdm
+from translator import integer_checker, translate_paragraph
 import os
 
 
-def checkInteger(string):
-    try:
-        int(string)
-        return True
-    except ValueError:
-        return False
-
-
-def translateParagraph(doc, start, end, bar):
-    for i in range(start, end):
-        paragraph = doc.paragraphs[i].text
-        if(paragraph != "" and checkInteger(paragraph) == False):
-            translated = GoogleTranslator(source='en', target='pt').translate(doc.paragraphs[i].text)
-            doc.paragraphs[i].text = translated
-            bar.update(1)
-
-def translateDocx(threadsToUse):
+def translate_docx(threadsToUse):
     doc = docx.Document("output.docx")
 
     print(len(doc.paragraphs))
@@ -33,10 +16,8 @@ def translateDocx(threadsToUse):
 
     paragraphsExcluded = 0
     for _, p in enumerate(doc.paragraphs):
-        if p.text != "" and not checkInteger(p.text):
+        if p.text != "" and not integer_checker.check_integer(p.text):
             paragraphsExcluded = paragraphsExcluded + 1
-
-    progressBar = tqdm(leave=False, total=paragraphsExcluded, desc=f'[Paragraphs translated]', unit="pg")
 
     for i in range(threadsToUse):
         if i == 0:
@@ -49,14 +30,12 @@ def translateDocx(threadsToUse):
         if i == threadsToUse-1:
             end = paragraphs
 
-        thread = threading.Thread(target=translateParagraph, args=(doc, start, end, progressBar))
+        thread = threading.Thread(target=translate_paragraph.translate_paragraph, args=(doc, start, end, ))
         threads.append(thread)
         thread.start()
 
     for _, thread in enumerate(threads):
         thread.join()
-
-    progressBar.close()
 
 
     doc.save("./files/outputTranslated.docx")
