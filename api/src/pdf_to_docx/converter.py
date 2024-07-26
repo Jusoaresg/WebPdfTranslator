@@ -2,13 +2,12 @@ from translator  import translate_docx
 from pdf2docx import Converter
 import threading
 from pdf_to_docx import error_checker, page_counter
-from typing import List
 
 
 threadsToUse = 1
-checkForErrors: List
+checkForErrors = []
 
-errors: List
+errors = []
 
 async def init(pdfPath: str, pdfName: str):
 
