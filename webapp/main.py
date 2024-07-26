@@ -1,6 +1,5 @@
-import webbrowser
 import requests
-from flask import Flask, Response, render_template, render_template_string, request, url_for, redirect
+from flask import Flask, Response, render_template, request
 
 app = Flask("pdfTranslator")
 
