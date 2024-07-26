@@ -1,10 +1,8 @@
 from fastapi import FastAPI, Response, UploadFile
-from starlette.responses import FileResponse
 import aiofiles
 from pdf_to_docx import converter
 import uuid
 import os
-import shutil
 
 app = FastAPI()
 
@@ -14,18 +12,22 @@ async def translate(file: UploadFile):
     if not os.path.exists("./files"):
         os.makedirs("./files")
 
-    filePath = f"./files/{uuid.uuid4()}"
+    pdfName = str(uuid.uuid4())
+    filePath = f"./files/{pdfName}"
 
     async with aiofiles.open(filePath, "wb") as f:
         await f.write(file.file.read())
 
-    await converter.init(filePath)
+    await converter.init(filePath, pdfName)
 
-    with open("./files/outputTranslated.pdf", mode="rb") as pdfFile:
+    with open(f'./files/{pdfName}-outputTranslated.pdf', mode="rb") as pdfFile:
         pdfContent = pdfFile.read()
 
-    if os.path.exists("./files"):
-        shutil.rmtree("./files")
-
+    try:
+        os.remove(f'./files/{pdfName}')
+        os.remove(f'./files/{pdfName}-outputTranslated.docx')
+        os.remove(f'./files/{pdfName}-outputTranslated.pdf')
+    except:
+        raise Exception("ERROR WHEN DELETING FILES")
 
     return Response(content=pdfContent, media_type="application/pdf")

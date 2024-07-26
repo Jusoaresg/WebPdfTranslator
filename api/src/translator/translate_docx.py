@@ -5,8 +5,10 @@ from translator import integer_checker, translate_paragraph
 import os
 
 
-def translate_docx(threadsToUse):
-    doc = docx.Document("output.docx")
+def translate_docx(threadsToUse: int, pdfName: str):
+    outputDocPath = f'{pdfName}-output.docx'
+
+    doc = docx.Document(outputDocPath)
 
     print(len(doc.paragraphs))
     threads = []
@@ -38,7 +40,7 @@ def translate_docx(threadsToUse):
         thread.join()
 
 
-    doc.save("./files/outputTranslated.docx")
+    doc.save(f'./files/{pdfName}-outputTranslated.docx')
 
 
     subprocess.call(['soffice',
@@ -46,9 +48,9 @@ def translate_docx(threadsToUse):
                     'pdf',
                     '--outdir',
                     './files',
-                    './files/outputTranslated.docx'])
+                    f'./files/{pdfName}-outputTranslated.docx'])
 
     try:
-        os.remove("./output.docx")
+        os.remove(outputDocPath)
     except:
         return
