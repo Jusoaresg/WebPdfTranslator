@@ -1,14 +1,13 @@
 import requests
 from flask import Flask, Response, render_template, request
+from dotenv import load_dotenv
 import os
 
 app = Flask("pdfTranslator")
 
-api_url = "http://127.0.0.1:8000/translate"
-envs = os.environ["PATH"]
-
-if os.environ.get("API_URL") != None:
-    api_url = os.environ.get("API_URL")
+load_dotenv()
+api_url = str(os.getenv("TRANSLATOR_API_URL"))
+#api_url = "http://127.0.0.1:8000/translate"
 
 FILES_FOLDER = "./files/"
 app.config['FILES_FOLDER'] = FILES_FOLDER
