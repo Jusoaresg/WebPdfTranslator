@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Response, UploadFile
 import aiofiles
-from pdf_to_docx import converter
+import pdf_to_docx
 import uuid
 import os
 
@@ -18,7 +18,7 @@ async def translate(file: UploadFile):
     async with aiofiles.open(filePath, "wb") as f:
         await f.write(file.file.read())
 
-    await converter.init(filePath, pdfName)
+    await pdf_to_docx.init(filePath, pdfName)
 
     with open(f'./files/{pdfName}-outputTranslated.pdf', mode="rb") as pdfFile:
         pdfContent = pdfFile.read()

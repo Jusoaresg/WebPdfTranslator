@@ -1,7 +1,7 @@
 import subprocess
 import threading
 import docx
-from translator import integer_checker, translate_paragraph
+import translator
 import os
 
 
@@ -18,7 +18,7 @@ def translate_docx(threadsToUse: int, pdfName: str):
 
     paragraphsExcluded = 0
     for _, p in enumerate(doc.paragraphs):
-        if p.text != "" and not integer_checker.check_integer(p.text):
+        if p.text != "" and not translator.integer_checker.check_integer(p.text):
             paragraphsExcluded = paragraphsExcluded + 1
 
     for i in range(threadsToUse):
@@ -32,7 +32,7 @@ def translate_docx(threadsToUse: int, pdfName: str):
         if i == threadsToUse-1:
             end = paragraphs
 
-        thread = threading.Thread(target=translate_paragraph.translate_paragraph, args=(doc, start, end, ))
+        thread = threading.Thread(target=translator.translate_paragraph, args=(doc, start, end, ))
         threads.append(thread)
         thread.start()
 

@@ -1,7 +1,7 @@
 from translator  import translate_docx
 from pdf2docx import Converter
 import threading
-from pdf_to_docx import error_checker, page_counter
+import pdf_to_docx
 
 
 threadsToUse = 1
@@ -12,7 +12,7 @@ errors = []
 async def init(pdfPath: str, pdfName: str):
 
     threads = []
-    pages = page_counter.page_count(pdfPath)
+    pages = pdf_to_docx.page_count(pdfPath)
     pagesDivided = pages/threadsToUse
 
     for i in range(threadsToUse):
@@ -24,7 +24,7 @@ async def init(pdfPath: str, pdfName: str):
             start = i * pagesDivided
             end = (i + 1) * pagesDivided
 
-        thread = threading.Thread(target=error_checker.error_check, args=(start, end))
+        thread = threading.Thread(target=pdf_to_docx.error_checker.error_check, args=(start, end))
         thread.start()
         threads.append(thread)
 
@@ -37,7 +37,7 @@ async def init(pdfPath: str, pdfName: str):
 
     if len(errors) == 0:
         cv = Converter(pdfPath)
-        cv.convert(f'{pdfName}-output.docx', start=0, end=page_counter.page_count(pdfPath), multi_processing=True, cpu_count=threadsToUse)
+        cv.convert(f'{pdfName}-output.docx', start=0, end=pdf_to_docx.page_counter.page_count(pdfPath), multi_processing=True, cpu_count=threadsToUse)
         cv.close()
 
-    translate_docx.translate_docx(threadsToUse, pdfName)
+    pdf_to_docx.translate_docx(threadsToUse, pdfName)
